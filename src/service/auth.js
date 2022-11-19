@@ -41,6 +41,14 @@ const authorizeUser = (req, res, next) => {
     next();
 }
 
+const requireRole = roleId => (req, res, next) => {
+    if(!(req.roleId && req.roleId >= roleId)) {
+        res.status(403).send({errorMessage: 'Forbidden for your role'});
+        return;
+    }
+    next();
+}
+
 const signIn = async (req, res) => {
     const {email, password} = req.body;
     const user = await userRepository.findAuthDataByEmail(email);
@@ -66,7 +74,7 @@ const signUp = async (req, res) => {
         delete user.password;
         delete user.passwordHash;
     } catch (e) {
-        res.status(409).send({errorMessage: 'Email is already used!'});
+        res.status(409).send({errorMessage: `${e}`});
         return;
     }
 
@@ -75,6 +83,7 @@ const signUp = async (req, res) => {
 
 module.exports = {
     authorizeUser,
+    requireRole,
     signIn,
     signUp
 };
