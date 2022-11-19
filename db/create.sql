@@ -9,7 +9,7 @@ CREATE TABLE "users"."user" (
   "role_id" int NOT NULL,
   "full_name" text NOT NULL,
   "email" text UNIQUE NOT NULL,
-  "password_sha256" char(64) NOT NULL,
+  "password_hash" varchar(128) NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (current_timestamp)
 );
 
