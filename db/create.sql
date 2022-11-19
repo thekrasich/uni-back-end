@@ -23,7 +23,7 @@ CREATE TABLE "events"."event" (
   "user_creator_id" int NOT NULL,
   "title" text NOT NULL,
   "description" text,
-  "faculty_id" int,
+  "department_id" int,
   "starts_at" timestamp NOT NULL,
   "ends_at" timestamp NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (current_timestamp)
@@ -60,7 +60,7 @@ ALTER TABLE "users"."user" ADD FOREIGN KEY ("role_id") REFERENCES "users"."role"
 
 ALTER TABLE "events"."event" ADD FOREIGN KEY ("user_creator_id") REFERENCES "users"."user" ("id");
 
-ALTER TABLE "events"."event" ADD FOREIGN KEY ("faculty_id") REFERENCES "departments"."faculty" ("id");
+ALTER TABLE "events"."event" ADD FOREIGN KEY ("department_id") REFERENCES "departments"."department" ("id");
 
 ALTER TABLE "events"."event_tag" ADD FOREIGN KEY ("event_id") REFERENCES "events"."event" ("id");
 
