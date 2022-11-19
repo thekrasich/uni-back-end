@@ -10,19 +10,10 @@ const eventService = require('../service/event');
 
 router.post('/events', authorizeUser,
     body('title').isLength({min: 10, max: 128}),
-    body('content').isLength({min: 20, max: 100000}),
-    body('startDate').custom((value, {req}) => {
-        const event = req.body;
-        const startDate = new Date(event.startDate);
-
-        if (isNaN(startDate)) {
-            return false;
-        }
-
-        event.startDate = startDate;
-
-        return true;
-    }),
+    body('description').isLength({min: 20, max: 100000}),
+    body('department_id').isInt().toInt(),
+    body('startsAt').isISO8601().toDate(),
+    body('endsAt').isISO8601().toDate(),
     errorHandler(eventService.create))
 
 router.get('/events', errorHandler(eventService.findAll));

@@ -9,7 +9,7 @@ const create = async (req, res) => {
     }
 
     const event = req.body;
-    event.startDate = new Date(event.startDate);
+    event.userCreatorId = req.userId;
 
     const [{id}] = await eventRepository.createEvent(event);
 

@@ -1,7 +1,7 @@
 const {db} = require("./db");
 
-const createEvent = (event, userCreatorId) => db('events.event').insert({
-    user_creator_id: userCreatorId,
+const createEvent = (event) => db('events.event').insert({
+    user_creator_id: event.userCreatorId,
     title: event.title,
     description: event.description,
     department_id: event.departmentId,
