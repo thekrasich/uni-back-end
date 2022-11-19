@@ -1,7 +1,7 @@
 const {db} = require("./db");
 
 const createUser = user => {
-    return db('users').insert({
+    return db('users.user').insert({
         role_id: user.roleId,
         full_name: user.fullName,
         email: user.email,
@@ -10,7 +10,7 @@ const createUser = user => {
 }
 
 const findAuthDataByEmail = email => {
-    return db('users')
+    return db('users.user')
         .select([
             'role_id as roleId', 
             'full_name as fullName',
