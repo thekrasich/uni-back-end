@@ -1,7 +1,7 @@
-const {dbClient} = require("./db");
+const {db} = require("./db");
 
 const createUser = user => {
-    return dbClient('users').insert({
+    return db('users').insert({
         username: user.username,
         password_hash: user.passwordHash,
         first_name: user.firstName,
@@ -14,16 +14,10 @@ const createUser = user => {
 }
 
 const findAuthDataByUserName = username => {
-    return dbClient('users')
-        .select(['id', 'email', 'password_hash'])
+    return db('users')
+        .select(['id', 'email', 'password_hash as passwordHash'])
         .where({username})
-        .first()
-        .then(user => {
-            if (user) {
-                user.passwordHash = user.password_hash;
-            }
-            return user;
-        });
+        .first();
 }
 
 module.exports = {

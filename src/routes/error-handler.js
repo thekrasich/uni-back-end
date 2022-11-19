@@ -3,7 +3,7 @@ const errorHandler = routerCallBack => {
         try {
             await routerCallBack(req, res, next);
         } catch (e) {
-            res.status(500).send({errorMessage: 'Untracked error!'});
+            res.status(500).send({errorMessage: `${e}`});
         }
     }
 };
