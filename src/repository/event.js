@@ -9,20 +9,6 @@ const createEvent = (event) => db('events.event').insert({
     ends_at: event.endsAt
 }).returning('id');
 
-// const reduceTags = query => {
-//     return query.then(events => events.reduce((result, row) => {
-//         if(result.length < row.id) {
-//             const event = {...row, tags: []};
-//             delete event.tagId;
-//             delete event.tagName;
-//             delete event.tagColor;
-//             result.push(event);
-//         }
-//         row.tagId && result[row.id-1].tags.push({id: row.tagId, name: row.tagName, color: tagColor});
-//         return result;
-//     }, []));
-// }
-
 const reduceTags = events => {
     return events.reduce((result, row) => {
         if(result.length < row.id) {
