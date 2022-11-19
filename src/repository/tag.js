@@ -1,5 +1,12 @@
 const {db} = require("./db");
 
+const createTag = tag => {
+    return db('events.tag').insert({
+        name: tag.name,
+        color: tag.color
+    }).returning('id');
+}
+
 const findAll = () => {
     return db({t: 'events.tag'})
         .select([
@@ -19,6 +26,7 @@ const findByKeyword = keyword => {
 }
 
 module.exports = {
+    createTag,
     findAll,
     findById,
     findByKeyword

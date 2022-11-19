@@ -1,4 +1,21 @@
+const { validationResult } = require('express-validator');
+
 const tagRepository = require('../repository/tag');
+
+const create = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const tag = req.body;
+
+    const [{id}] = await tagRepository.createTag(tag);
+
+    tag.id = id;
+
+    res.status(201).send(tag);
+}
 
 const findAll = (req, res) => {
     return (
@@ -26,6 +43,7 @@ const findById = (req, res) => {
 };
 
 module.exports = {
+    create,
     findAll,
     findById
 }
