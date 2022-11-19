@@ -2,25 +2,27 @@ const {db} = require("./db");
 
 const createUser = user => {
     return db('users').insert({
-        username: user.username,
-        password_hash: user.passwordHash,
-        first_name: user.firstName,
-        middle_name: user.middleName,
-        last_name: user.lastName,
+        role_id: user.roleId,
+        full_name: user.fullName,
         email: user.email,
-        phone: user.phone,
-        info : user.info
+        password_hash: user.passwordHash
     }).returning('id');
 }
 
-const findAuthDataByUserName = username => {
+const findAuthDataByEmail = email => {
     return db('users')
-        .select(['id', 'email', 'password_hash as passwordHash'])
-        .where({username})
+        .select([
+            'role_id as roleId', 
+            'full_name as fullName',
+            'email', 
+            'password_hash as passwordHash',
+            'created_at as createdAt'
+        ])
+        .where({email})
         .first();
 }
 
 module.exports = {
     createUser,
-    findAuthDataByUserName
+    findAuthDataByEmail
 }

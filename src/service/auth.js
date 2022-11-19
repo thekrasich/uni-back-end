@@ -33,21 +33,22 @@ const authorizeUser = (req, res, next) => {
         return;
     }
 
-    const {userId} = jwt.decode(jwtToken);
+    const {userId, roleId} = jwt.decode(jwtToken);
 
     req.userId = userId;
+    req.roleId = roleId;
 
     next();
 }
 
 const signIn = async (req, res) => {
-    const {username, password} = req.body;
-    const user = await userRepository.findAuthDataByUserName(username);
+    const {email, password} = req.body;
+    const user = await userRepository.findAuthDataByEmail(email);
 
     const isMatch = bcrypt.compareSync(password, user.passwordHash);
 
     if (isMatch) {
-        res.send({token: jwt.sign({userId: user.id, email: user.email}, jwtSecret)});
+        res.send({token: jwt.sign({userId: user.id, email: user.email, roleId: user.roleId}, jwtSecret)});
     } else {
         res.status(401).send({errorMessage: 'Unauthorized'});
     }
@@ -65,7 +66,7 @@ const signUp = async (req, res) => {
         delete user.password;
         delete user.passwordHash;
     } catch (e) {
-        res.status(409).send({errorMessage: 'Username or email is already used!'});
+        res.status(409).send({errorMessage: 'Email is already used!'});
         return;
     }
 
