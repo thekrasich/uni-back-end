@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const userRepository = require('../repository/user');
+const userRepository = require('../repositories/user');
 
 const jwtSecret = 'test';
 

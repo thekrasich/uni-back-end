@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 
-const eventRepository = require('../repository/event');
+const eventRepository = require('../repositories/event');
 
 const create = async (req, res) => {
     const errors = validationResult(req);

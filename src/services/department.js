@@ -1,4 +1,4 @@
-const departmentRepository = require('../repository/department');
+const departmentRepository = require('../repositories/department');
 
 const findAll = (req, res) => departmentRepository.findAll()
     .then(events => {
