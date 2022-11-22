@@ -31,7 +31,7 @@ const fetchAll = () => {
         .leftJoin('events.tag as t', 'et.tag_id', '=', 't.id')
         .select([
             'e.id', 
-            'e.user_creator_id as userCreatorId', 
+            'e.creator_user_id as creatorUserId', 
             'e.title',
             'e.description', 
             'e.department_id as departmentId',
