@@ -6,10 +6,10 @@
  
 ## Deploy Locally
 
->>> 
+
 - Requires `docker`
 - Listens on port `8080`
->>>
+
 
 ### With docker-compose
 
