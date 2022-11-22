@@ -3,7 +3,7 @@ const router = express.Router();
 
 const errorHandler = require("./error-handler");
 
-const facultyService = require('../service/faculty');
+const facultyService = require('../services/faculty');
 
 router.get('/faculties', errorHandler(facultyService.findAll));
 

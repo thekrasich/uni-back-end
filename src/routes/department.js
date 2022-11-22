@@ -5,8 +5,8 @@ const {body} = require('express-validator');
 
 const errorHandler = require("./error-handler");
 
-const {authorizeUser} = require("../service/auth");
-const departmentService = require('../service/department');
+const {authorizeUser} = require("../services/auth");
+const departmentService = require('../services/department');
 
 // router.post('/department', authorizeUser,
 //     body('title').isLength({min: 10, max: 128}),

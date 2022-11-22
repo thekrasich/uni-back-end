@@ -5,8 +5,8 @@ const {body} = require('express-validator');
 
 const errorHandler = require("./error-handler");
 
-const {authorizeUser, requireRole} = require("../service/auth");
-const tagService = require('../service/tag');
+const {authorizeUser, requireRole} = require("../services/auth");
+const tagService = require('../services/tag');
 
 router.post('/tag', authorizeUser, requireRole(2),
     body('name').isLength({min: 3, max: 128}),
