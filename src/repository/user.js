@@ -12,6 +12,7 @@ const createUser = user => {
 const findAuthDataByEmail = email => {
     return db('users.user')
         .select([
+            'id',
             'role_id as roleId', 
             'full_name as fullName',
             'email', 
