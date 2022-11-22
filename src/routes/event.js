@@ -11,7 +11,7 @@ const eventService = require('../service/event');
 router.post('/events', authorizeUser,
     body('title').isLength({min: 10, max: 128}),
     body('description').isLength({min: 20, max: 100000}),
-    body('department_id').isInt().toInt(),
+    body('departmentId').isInt().toInt(),
     body('startsAt').isISO8601().toDate(),
     body('endsAt').isISO8601().toDate(),
     errorHandler(eventService.create))
