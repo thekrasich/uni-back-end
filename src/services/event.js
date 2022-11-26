@@ -20,7 +20,7 @@ const create = async (req, res) => {
 
 const findAll = (req, res) => {
   return eventRepository.findAll(req.query)
-    .then(events => res.send(events))
+    .then(events => res.send({ items: events }))
 }
 
 const findById = (req, res) => {
