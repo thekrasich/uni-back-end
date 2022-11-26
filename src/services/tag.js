@@ -8,23 +8,14 @@ const create = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const tag = req.body;
-
-  const [{ id }] = await tagRepository.create(tag);
-
-  tag.id = id;
+  const tag = await tagRepository.create(req.body);
 
   res.status(201).send(tag);
 }
 
 const findAll = (req, res) => {
-  return (
-    req.query.keyword
-      ? tagRepository.findByKeyword(req.query.keyword)
-      : tagRepository.findAll()
-  ).then(events => {
-    res.send(events);
-  });
+  return tagRepository.findAll(req.body)
+    .then(events => res.send(events));
 }
 
 
