@@ -1,5 +1,8 @@
 const departmentRepository = require('../repositories/department');
 
+const create = (req, res) => departmentRepository.create(req.body)
+  .then(id => res.send(id));
+
 const findAll = (req, res) => departmentRepository.findAll()
     .then(events => {
         res.send(events);
@@ -20,6 +23,7 @@ const findById = (req, res) => {
 };
 
 module.exports = {
-    findAll,
-    findById
+  create,
+  findAll,
+  findById
 }
