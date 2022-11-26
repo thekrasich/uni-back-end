@@ -1,4 +1,4 @@
-const userRepository = require('./../repositories/user');
+const userRepo = require('./../repositories/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -6,7 +6,7 @@ const salt = bcrypt.genSaltSync(10);
 
 const signIn = async (req, res) => {
   const { email, password } = req.body;
-  const user = await userRepository.findAuthDataByEmail(email);
+  const user = await userRepo.findAuthDataByEmail(email);
 
   const isMatch = bcrypt.compareSync(password, user.passwordHash);
 
@@ -23,7 +23,7 @@ const signUp = async (req, res) => {
   user.passwordHash = bcrypt.hashSync(user.password, salt);
 
   try {
-    const [{ id }] = await userRepository.createUser(user);
+    const [{ id }] = await userRepo.createUser(user);
     res.status(201).send({
       id,
       roleId: user.roleId,

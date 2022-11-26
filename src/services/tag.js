@@ -1,12 +1,12 @@
-const tagRepository = require('../repositories/tag');
+const tagRepo = require('../repositories/tag');
 
 const create = async (req, res) => {
-  const tag = await tagRepository.create(req.body);
+  const tag = await tagRepo.create(req.body);
   res.status(201).send(tag);
 }
 
 const findAll = (req, res) => {
-  return tagRepository.findAll(req.body)
+  return tagRepo.findAll(req.body)
     .then(events => res.send(events));
 }
 
@@ -14,7 +14,7 @@ const findAll = (req, res) => {
 const findById = (req, res) => {
   const id = +req.params.id;
 
-  return tagRepository.findById(id)
+  return tagRepo.findById(id)
     .then(event => {
 
       if (event) {

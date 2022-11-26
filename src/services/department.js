@@ -1,9 +1,9 @@
-const departmentRepository = require('../repositories/department');
+const departmentRepo = require('../repositories/department');
 
-const create = (req, res) => departmentRepository.create(req.body)
+const create = (req, res) => departmentRepo.create(req.body)
   .then(id => res.send(id));
 
-const findAll = (req, res) => departmentRepository.findAll()
+const findAll = (req, res) => departmentRepo.findAll()
   .then(events => {
     res.send(events);
   });
@@ -11,7 +11,7 @@ const findAll = (req, res) => departmentRepository.findAll()
 const findById = (req, res) => {
   const id = +req.params.id;
 
-  return departmentRepository.findById(id)
+  return departmentRepo.findById(id)
     .then(event => {
       if (event) {
         res.send(event);
