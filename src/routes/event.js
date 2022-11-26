@@ -15,8 +15,8 @@ router.post('/events', authRole(2),
   errorHandler(eventService.create))
 
 router.get('/events', auth,
-  query(['from', 'to']).isISO8601(),
-  query(['departments', 'faculties', 'tags']).customSanitizer((value, _) => value.split(',')),
+  query(['from', 'to']).optional().isISO8601(),
+  query(['departments', 'faculties', 'tags']).optional().customSanitizer((value, _) => value.split(',')),
   errorHandler(eventService.findAll));
 
 router.get('/events/:id([1-9][0-9]+|[1-9])', auth, errorHandler(eventService.findById));
