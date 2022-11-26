@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 
 const jwtSecret = 'test';
 
@@ -45,6 +46,15 @@ const TOKEN_PREFIX = "Bearer";
 const auth = (req, res, next) => next();
 const authRole = (minRequiredRole) => (req, res, next) => next();
 
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  next();
+}
+
 const errorHandler = routerCallBack => {
   return async (req, res, next) => {
     try {
@@ -59,5 +69,6 @@ const errorHandler = routerCallBack => {
 module.exports = {
   authRole,
   auth,
+  validate,
   errorHandler
 };
