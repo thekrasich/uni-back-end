@@ -10,6 +10,7 @@ router.post('/department',
   authRole(2),
   body('facultyId').isInt().toInt(),
   body('name'),
+  body('url').optional().isURL(),
   validate,
   errorHandler(departmentService.create)
 );

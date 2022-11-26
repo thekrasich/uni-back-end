@@ -1,7 +1,7 @@
 const { db } = require("./db");
 
-const create = ({ name }) => {
-  return db('departments.faculty').insert({ name }, 'id');
+const create = ({ name, url }) => {
+  return db('departments.faculty').insert({ name, url }, 'id');
 }
 
 const reduceDepartments = faculties => {

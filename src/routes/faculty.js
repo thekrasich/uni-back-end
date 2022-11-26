@@ -10,6 +10,7 @@ const facultyService = require('../services/faculty');
 router.post('/faculties',
   authRole(2),
   body('name'),
+  body('url').optional().isURL(),
   validate,
   errorHandler(facultyService.create));
 

@@ -1,8 +1,8 @@
 const { db } = require("./db");
 
-const create = ({ facultyId, name }) => {
+const create = ({ facultyId, name, url }) => {
   return db('departments.department')
-    .insert({ faculty_id: facultyId, name }, 'id');
+    .insert({ faculty_id: facultyId, name, url }, 'id');
 }
 
 const fetchAll = () => db({ d: 'departments.department' })
