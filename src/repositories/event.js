@@ -138,9 +138,9 @@ const createEvent = event => {
 };
 
 const reduceTags = events => {
-  return events.reduce((result, row) => {
-    if (result.length < row.id) {
-      result.push({
+  return Array.from(events.reduce((result, row) => {
+    if (!result.has(row.id)) {
+      result.set(row.id, {
         id: row.id,
         creatorUserId: row.creatorUserId,
         title: row.title,
