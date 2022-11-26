@@ -98,10 +98,10 @@ const fetchAll = () => {
 const findAll = ({ from, to, departments, faculties, tags }) => {
   return fetchAll()
     .modify(b => {
-      from && b.where('endsAt', '>=', from);
-      to && b.where('startsAt', '<=', to);
-      departments && departments.length > 0 && b.whereIn('departmentId', departments);
-      faculties && faculties.length > 0 && b.whereIn('facultyId', faculties);
+      from && b.where('ends_at', '>=', from);
+      to && b.where('starts_at', '<=', to);
+      departments && departments.length > 0 && b.whereIn('department_id', departments);
+      faculties && faculties.length > 0 && b.whereIn('faculty_id', faculties);
       tags && b.whereIn('e.id', function () {
         this.select('et.event_id')
           .from('events.event_tag as et')
