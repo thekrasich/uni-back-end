@@ -159,9 +159,9 @@ const reduceTags = events => {
         createdAt: row.createdAt
       });
     }
-    row.tagId && result[row.id - 1].tags.push({ id: row.tagId, name: row.tagName, color: row.tagColor });
+    row.tagId && result.get(row.id).tags.push({ id: row.tagId, name: row.tagName, color: row.tagColor });
     return result;
-  }, [])
+  }, new Map()).values());
 }
 
 const fetchAll = () => {
