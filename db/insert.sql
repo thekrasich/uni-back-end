@@ -1,4 +1,4 @@
-INSERT INTO users.user(name) VALUES ('viewer', 'admin');
+INSERT INTO users.role(name) VALUES ('viewer', 'admin');
 insert into users.user (id, role_id, full_name, email, password_hash) values (1, 1, 'Terri Chappelle', 'tchappelle0@com.com', '72ee94ef18e92c3bfaee67f16fdfa6abb55d24dee279f62f714b737a9466af54');
 insert into users.user (id, role_id, full_name, email, password_hash) values (2, 1, 'Ivie Waberer', 'iwaberer1@blinklist.com', '13d084898c7d56b345830e98e0b521021d8f757c5422ac71c94a15fb30ded444');
 insert into users.user (id, role_id, full_name, email, password_hash) values (3, 1, 'Saunderson Braundt', 'sbraundt2@cnbc.com', '73801b4f8a8d6aaf356dd9fa838e53cf4eaab8d6afeb9456beb5ee38415c8aba');
