@@ -118,8 +118,21 @@ const findById = id => {
     .then(events => reduceTags(events)[0]);
 }
 
+const findTagsByEventId = async id => {
+  const event = await db('events.event').select('id').where('id', '=', id);
+  if(!event) {
+    throw new Error(`Event with id ${id} doesn't exist`);
+  }
+
+  return db({et: 'events.event_tag'})
+    .innerJoin('events.tag as t', 't.id', '=', 'et.tag_id')
+    .where('et.event_id', '=', id)
+    .select(['t.id', 't.name', 't.color'])
+}
+
 module.exports = {
   create,
   findAll,
-  findById
+  findById,
+  findTagsByEventId
 }

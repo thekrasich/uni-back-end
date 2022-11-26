@@ -36,8 +36,15 @@ const findById = (req, res) => {
     })
 }
 
+const findTagsByEventId = (req, res) => {
+  return eventRepo.findTagsByEventId(+req.params.id)
+    .then(tags => res.send({ items: tags }))
+    .catch(_ => res.status(404).send({ errorMessage: 'Event not found' }))
+}
+
 module.exports = {
   create,
   findAll,
-  findById
+  findById,
+  findTagsByEventId
 }

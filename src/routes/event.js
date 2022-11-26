@@ -22,5 +22,6 @@ router.get('/events', auth,
   errorHandler(eventService.findAll));
 
 router.get('/events/:id([1-9][0-9]+|[1-9])', auth, errorHandler(eventService.findById));
+router.get('/events/:id([1-9][0-9]+|[1-9])/tags', auth, errorHandler(eventService.findTagsByEventId));
 
 module.exports = router;
