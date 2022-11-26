@@ -188,26 +188,30 @@ const fetchAll = () => {
         ]);
 }
 
-const findAll = () => {
-    return fetchAll().then(reduceTags);
+const findAll = ({ from, to, departments, faculties, tags }) => {
+  return fetchAll()
+    .modify(b => {
+      from && b.where('endsAt', '>=', from);
+      to && b.where('startsAt', '<=', to);
+      departments && departments.length > 0 && b.whereIn('departmentId', departments);
+      faculties && faculties.length > 0 && b.whereIn('facultyId', faculties);
+      tags && b.whereIn('e.id', function () {
+        this.select('et.event_id')
+          .from('events.event_tag as et')
+          .innerJoin('events.tag as t', 't.id', '=', 'et.tag_id')
+          .whereIn('t.name', tags)
+      });
+    })
+    .then(reduceTags);
 }
 
 const findById = id => {
-    return fetchAll().where('e.id', id).then(reduceTags)[0];
-}
-
-const findByTags = tags => {
-    return fetchAll().whereIn('e.id', function() {
-        this.select('et.event_id')
-            .from('events.event_tag as et')
-            .innerJoin('events.tag as t', 't.id', '=', 'et.tag_id')
-            .whereIn('t.name', tags)
-    }).then(reduceTags);
+  return fetchAll()
+    .where('e.id', id)
+    .then(events => reduceTags(events)[0]);
 }
 
 module.exports = {
-    findAll,
-    findById,
-    findByTags,
-    createEvent
+  findAll,
+  findById
 }
