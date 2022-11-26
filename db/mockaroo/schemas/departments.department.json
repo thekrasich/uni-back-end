@@ -22,6 +22,16 @@
       "max": 5,
       "decimals": 0,
       "formula": null
+    },
+    {
+      "name": "url",
+      "null_percentage": 20,
+      "type": "URL",
+      "includeProtocol": true,
+      "includeHost": true,
+      "includePath": true,
+      "includeQueryString": false,
+      "formula": null
     }
   ]
 }

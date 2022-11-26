@@ -55,9 +55,11 @@ const reduceTags = events => {
         department: {
           id: row.departmentId,
           name: row.departmentName,
+          url: row.departmentUrl,
           faculty: {
             id: row.facultyId,
-            name: row.facultyName
+            name: row.facultyName,
+            url: row.facultyUrl
           }
         },
         startsAt: row.startsAt,
@@ -84,8 +86,10 @@ const fetchAll = () => {
       'e.description',
       'e.department_id as departmentId',
       'd.name as departmentName',
+      'd.url as departmentUrl',
       'f.id as facultyId',
       'f.name as facultyName',
+      'f.url as facultyUrl',
       't.id as tagId',
       't.name as tagName',
       't.color as tagColor',

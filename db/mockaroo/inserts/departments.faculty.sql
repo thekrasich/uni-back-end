@@ -1,5 +1,5 @@
-insert into departments.faculty (name) values ('in felis donec semper sapien a libero');
-insert into departments.faculty (name) values ('lorem quisque ut erat curabitur');
-insert into departments.faculty (name) values ('nulla integer pede');
-insert into departments.faculty (name) values ('consequat lectus in est');
-insert into departments.faculty (name) values ('sapien urna pretium nisl ut volutpat');
+insert into departments.faculty (name, url) values ('sollicitudin vitae consectetuer', 'https://freewebs.com/quis/orci/nullam/molestie/nibh.xml');
+insert into departments.faculty (name, url) values ('nec dui luctus rutrum nulla tellus in', null);
+insert into departments.faculty (name, url) values ('at nunc commodo placerat', 'https://google.nl/ut/dolor/morbi/vel.xml');
+insert into departments.faculty (name, url) values ('morbi vel lectus in quam', null);
+insert into departments.faculty (name, url) values ('sagittis dui vel nisl duis ac nibh', 'http://whitehouse.gov/in/eleifend/quam/a/odio/in/hac.json');
