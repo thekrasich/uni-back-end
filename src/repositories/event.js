@@ -138,17 +138,30 @@ const createEvent = event => {
 };
 
 const reduceTags = events => {
-    return events.reduce((result, row) => {
-        if(result.length < row.id) {
-            const event = {...row, tags: []};
-            delete event.tagId;
-            delete event.tagName;
-            delete event.tagColor;
-            result.push(event);
-        }
-        row.tagId && result[row.id-1].tags.push({id: row.tagId, name: row.tagName, color: tagColor});
-        return result;
-    }, [])
+  return events.reduce((result, row) => {
+    if (result.length < row.id) {
+      result.push({
+        id: row.id,
+        creatorUserId: row.creatorUserId,
+        title: row.title,
+        description: row.description,
+        department: {
+          id: row.departmentId,
+          name: row.departmentName,
+          faculty: {
+            id: row.facultyId,
+            name: row.facultyName
+          }
+        },
+        startsAt: row.startsAt,
+        endsAt: row.endsAt,
+        tags: [],
+        createdAt: row.createdAt
+      });
+    }
+    row.tagId && result[row.id - 1].tags.push({ id: row.tagId, name: row.tagName, color: row.tagColor });
+    return result;
+  }, [])
 }
 
 const fetchAll = () => {
