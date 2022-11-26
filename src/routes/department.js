@@ -1,31 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const {body} = require('express-validator');
+const { body } = require('express-validator');
 
-const errorHandler = require("./error-handler");
-
-const {authorizeUser} = require("../services/auth");
+const { auth, authRole, errorHandler } = require("../middleware");
 const departmentService = require('../services/department');
 
-// router.post('/department', authorizeUser,
-//     body('title').isLength({min: 10, max: 128}),
-//     body('content').isLength({min: 20, max: 100000}),
-//     body('startDate').custom((value, {req}) => {
-//         const event = req.body;
-//         const startDate = new Date(event.startDate);
+router.post('/department',
+  authRole(2),
+  body('facultyId').isInt().toInt(),
+  body('name'),
+  errorHandler(departmentService.create)
+);
 
-//         if (isNaN(startDate)) {
-//             return false;
-//         }
-
-//         event.startDate = startDate;
-
-//         return true;
-//     }),
-//     errorHandler(eventService.create))
-
-router.get('/departments', errorHandler(departmentService.findAll));
-router.get('/departments/:id([1-9][0-9]+|[1-9])', errorHandler(departmentService.findById));
+router.get('/departments', auth, errorHandler(departmentService.findAll));
+router.get('/departments/:id([1-9][0-9]+|[1-9])', auth, errorHandler(departmentService.findById));
 
 module.exports = router;
