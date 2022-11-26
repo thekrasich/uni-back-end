@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const {body} = require('express-validator');
+const { body } = require('express-validator');
 
-const errorHandler = require("./error-handler");
+const { errorHandler } = require("./../middleware");
 
-const {authorizeUser, requireRole} = require("../services/auth");
+const { auth, authRole } = require("../middleware");
 const tagService = require('../services/tag');
 
-router.post('/tag', authorizeUser, requireRole(2),
-    body('name').isLength({min: 3, max: 128}),
-    body('color').isHexColor(),
-    errorHandler(tagService.create));
+router.post('/tag', authRole(2),
+  body('name').isLength({ min: 3, max: 128 }),
+  body('color').isHexColor(),
+  errorHandler(tagService.create));
 
-router.get('/tags/:id([1-9][0-9]+|[1-9])', authorizeUser, errorHandler(tagService.findById));
-router.get('/tags', authorizeUser, errorHandler(tagService.findAll))
+router.get('/tags/:id([1-9][0-9]+|[1-9])', auth, errorHandler(tagService.findById));
+router.get('/tags', auth, errorHandler(tagService.findAll))
 
 module.exports = router;

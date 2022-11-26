@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const errorHandler = require("./error-handler");
+const { errorHandler } = require("./../middleware");
 
 const authService = require('../services/auth');
 
