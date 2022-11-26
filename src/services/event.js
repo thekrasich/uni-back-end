@@ -19,11 +19,8 @@ const create = async (req, res) => {
 }
 
 const findAll = (req, res) => {
-    return (
-        req.query.tags
-        ? eventRepository.findByTags(req.query.tags.split(','))
-        : eventRepository.findAll()
-    ).then(events => res.send(events))
+  return eventRepository.findAll(req.query)
+    .then(events => res.send(events))
 }
 
 const findById = (req, res) => {
