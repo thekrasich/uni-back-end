@@ -1,140 +1,44 @@
-const {db} = require("./db");
+const { db } = require("./db");
 
-const createEvent = event => {
-    console.log('begin transaction');
+const create = async ({ creatorUserId, title, description, departmentId, startsAt, endsAt, tags }) => {
+  const trx = await db.transaction();
 
-    return db.transaction(trx => {
-
-        const tags = event.tags.map(tagId => ({
-            tag_id: tagId
+  return trx.insert({
+    creator_user_id: creatorUserId,
+    title,
+    description,
+    department_id: departmentId,
+    starts_at: startsAt,
+    ends_at: endsAt
+  }, 'id')
+    .into('events.event')
+    .then(([{ id }]) => {
+      if (tags && tags.length > 0) {
+        console.log("tags && tags.length > 0");
+        console.log(`inserted event id: ${id}`)
+        const event_tags = tags.map(tagId => ({
+          tag_id: tagId,
+          event_id: id
         }));
 
-        return trx
-            .insert({
-                creator_user_id: event.creatorUserId,
-                title: event.title,
-                description: event.description,
-                department_id: event.departmentId,
-                starts_at: event.startsAt,
-                ends_at: event.endsAt
-            }, 'id')
-            .into('events.event')
-            .then(id => {
-                tags.forEach(tag => tag.event_id = id);
-                return trx('events.event_tag').insert(tags);
-            })
-
-        // db.insert({
-        //     creator_user_id: event.creatorUserId,
-        //     title: event.title,
-        //     description: event.description,
-        //     department_id: event.departmentId,
-        //     starts_at: event.startsAt,
-        //     ends_at: event.endsAt
-        // }, 'id')
-        // .into('events.event')
-        // .transacting(trx)
-        // .then(id => {
-        //     tags.forEach(tag => tag.event_id = id);
-        //     return db('events.event_tag').insert(tags).transacting(trx);
-        // })
-        // .then(trx.commit)
-        // .catch(trx.rollback);
+        return trx.insert(event_tags, '*')
+          .into('events.event_tag')
+          .then(ids => {
+            console.log("Inserted event_tag ids");
+            console.log(ids);
+            return id;
+          });
+      } else {
+        console.log(`Promise.resolve(${id})`)
+        return Promise.resolve(id);
+      }
+    })
+    .then(id => {
+      return trx.rollback().then(_ => id);
+    })
+    .catch(e => {
+      return trx.rollback().then(_ => console.log(e)).then(_ => throw e);
     });
-
-    // return db.transaction(trx => {
-    //     const tags = event.tags.map(tagId => ({
-    //         tag_id: tagId
-    //     }));
-
-    //     db.insert({
-    //         creator_user_id: event.creatorUserId,
-    //         title: event.title,
-    //         description: event.description,
-    //         department_id: event.departmentId,
-    //         starts_at: event.startsAt,
-    //         ends_at: event.endsAt
-    //     }, 'id')
-    //     .into('events.event')
-    //     .transacting(trx)
-    //     .then(id => {
-    //         tags.forEach(tag => tag.event_id = id);
-    //         return db('events.event_tag').insert(tags).transacting(trx);
-    //     })
-    //     .then(trx.commit)
-    //     .catch(trx.rollback);
-    // });
-
-    // return db.transaction(trx => {
-    //     db('events.event')
-    //         .insert({
-    //             creator_user_id: event.creatorUserId,
-    //             title: event.title,
-    //             description: event.description,
-    //             department_id: event.departmentId,
-    //             starts_at: event.startsAt,
-    //             ends_at: event.endsAt
-    //         })
-    //         .returning('id')
-    //         .transacting(trx)
-    //         .then(id => {
-    //             db('events.event_tag')
-    //                 .insert(event.tags.map(tagId => ({
-    //                     tag_id: tagId, 
-    //                     event_id: id.id})))
-    //                 .transacting(trx);
-    //             return id;
-    //         })
-    //         .then(trx.commit)
-    //         .catch(trx.rollback);
-    // });
-
-    // return db.transaction(trx => {
-    //     db('events.event')
-    //         .insert({
-    //             creator_user_id: event.creatorUserId,
-    //             title: event.title,
-    //             description: event.description,
-    //             department_id: event.departmentId,
-    //             starts_at: event.startsAt,
-    //             ends_at: event.endsAt
-    //         })
-    //         .returning('id')
-    //         .transacting(trx)
-    //         .then(id => {
-    //             db('events.event_tag')
-    //                 .insert(event.tags.map(tagId => ({
-    //                     tag_id: tagId, 
-    //                     event_id: id.id})))
-    //                 .transacting(trx);
-    //             return id;
-    //         })
-    //         .then(trx.commit)
-    //         .catch(trx.rollback);
-    // });
-
-
-
-
-    // return db.transaction(trx => {
-    //     trx.insert({
-    //         creator_user_id: event.creatorUserId,
-    //         title: event.title,
-    //         description: event.description,
-    //         department_id: event.departmentId,
-    //         starts_at: event.startsAt,
-    //         ends_at: event.endsAt})
-    //     .into(('events.event'))
-    //     .returning('id')
-    //     .then(id => {
-    //         trx.insert(event.tags.map(tagId => ({tag_id: tagId, event_id: id}))).into('events.event_tag')
-    //         return id;
-    //     }).then(id => {
-    //         trx.commit;
-    //         return id;
-    //     })
-    //     .catch(trx.rollback);
-    // });
 };
 
 const reduceTags = events => {
@@ -165,27 +69,27 @@ const reduceTags = events => {
 }
 
 const fetchAll = () => {
-    return db({e: 'events.event'})
-        .leftJoin('departments.department as d', 'e.department_id', '=', 'd.id')
-        .leftJoin('departments.faculty as f', 'd.faculty_id', '=', 'f.id')
-        .leftJoin('events.event_tag as et', 'e.id', '=', 'et.event_id')
-        .leftJoin('events.tag as t', 'et.tag_id', '=', 't.id')
-        .select([
-            'e.id', 
-            'e.creator_user_id as creatorUserId', 
-            'e.title',
-            'e.description', 
-            'e.department_id as departmentId',
-            'd.name as departmentName',
-            'f.id as facultyId',
-            'f.name as facultyName',
-            't.id as tagId',
-            't.name as tagName',
-            't.color as tagColor',
-            'e.starts_at as startsAt', 
-            'e.ends_at as endsAt',
-            'e.created_at as createdAt'
-        ]);
+  return db({ e: 'events.event' })
+    .leftJoin('departments.department as d', 'e.department_id', '=', 'd.id')
+    .leftJoin('departments.faculty as f', 'd.faculty_id', '=', 'f.id')
+    .leftJoin('events.event_tag as et', 'e.id', '=', 'et.event_id')
+    .leftJoin('events.tag as t', 'et.tag_id', '=', 't.id')
+    .select([
+      'e.id',
+      'e.creator_user_id as creatorUserId',
+      'e.title',
+      'e.description',
+      'e.department_id as departmentId',
+      'd.name as departmentName',
+      'f.id as facultyId',
+      'f.name as facultyName',
+      't.id as tagId',
+      't.name as tagName',
+      't.color as tagColor',
+      'e.starts_at as startsAt',
+      'e.ends_at as endsAt',
+      'e.created_at as createdAt'
+    ]);
 }
 
 const findAll = ({ from, to, departments, faculties, tags }) => {
@@ -212,6 +116,7 @@ const findById = id => {
 }
 
 module.exports = {
+  create,
   findAll,
   findById
 }

@@ -9,11 +9,10 @@ const create = async (req, res) => {
   }
 
   const event = req.body;
-  event.creatorUserId = req.userId;
-
-  const [{ id }] = await eventRepository.create(event);
-
-  event.id = id;
+  // temporarily, for testing
+  // event.creatorUserId = req.user.id;
+  event.creatorUserId = 11;
+  event.id = await eventRepository.create(event);
 
   res.status(201).send(event);
 }
