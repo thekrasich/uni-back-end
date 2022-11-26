@@ -37,7 +37,10 @@ const create = async ({ creatorUserId, title, description, departmentId, startsA
       return trx.rollback().then(_ => id);
     })
     .catch(e => {
-      return trx.rollback().then(_ => console.log(e)).then(_ => throw e);
+      return trx.rollback().then(_ => {
+        console.log(e);
+        throw e;
+      });
     });
 };
 
