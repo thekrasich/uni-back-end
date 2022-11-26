@@ -1,11 +1,23 @@
 const express = require('express');
 const router = express.Router();
 
-const { errorHandler } = require("./../middleware");
+const { validate, errorHandler } = require("./../middleware");
 
 const authService = require('../services/auth');
+const { body } = require("express-validator");
 
-router.post('/auth/sign-in', errorHandler(authService.signIn));
-router.post('/auth/sign-up', errorHandler(authService.signUp));
+router.post('/auth/sign-in',
+  body('roleId').isInt().toInt(),
+  body('fullName'),
+  body('email').isEmail(),
+  body('password'),
+  validate,
+  errorHandler(authService.signIn));
+
+router.post('/auth/sign-up',
+  body('email').isEmail(),
+  body('password'),
+  validate,
+  errorHandler(authService.signUp));
 
 module.exports = router;

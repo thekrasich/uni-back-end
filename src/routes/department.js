@@ -3,13 +3,14 @@ const router = express.Router();
 
 const { body } = require('express-validator');
 
-const { auth, authRole, errorHandler } = require("../middleware");
+const { auth, authRole, validate, errorHandler } = require("./../middleware");
 const departmentService = require('../services/department');
 
 router.post('/department',
   authRole(2),
   body('facultyId').isInt().toInt(),
   body('name'),
+  validate,
   errorHandler(departmentService.create)
 );
 

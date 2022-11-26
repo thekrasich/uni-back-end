@@ -5,12 +5,13 @@ const { body } = require('express-validator');
 
 const { errorHandler } = require("./../middleware");
 
-const { auth, authRole } = require("../middleware");
+const { auth, authRole, validate } = require("../middleware");
 const tagService = require('../services/tag');
 
 router.post('/tag', authRole(2),
   body('name').isLength({ min: 3, max: 128 }),
   body('color').isHexColor(),
+  validate,
   errorHandler(tagService.create));
 
 router.get('/tags/:id([1-9][0-9]+|[1-9])', auth, errorHandler(tagService.findById));
