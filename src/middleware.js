@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { validationResult, param } = require('express-validator');
 
-const jwtSecret = 'test';
+const JWT_SECRET = process.env.JWT_SECRET || 'lnu-events';
 
 const AUTH_TOKEN_HEADER = "Authorization";
 const TOKEN_PREFIX = "Bearer";
@@ -16,23 +16,23 @@ const authRole = (minRequiredRole = 1) => (req, res, next) => {
 
   const authHeaderParts = authHeader.split(' ');
   if (authHeaderParts.length !== 2 || TOKEN_PREFIX !== authHeaderParts[0]) {
-    res.status(401).send({ errorMessage: 'Invalid format of Auth header!' });
+    res.status(401).send({ errorMessage: 'Invalid format of Auth header' });
     return;
   }
 
-  const jwtToken = authHeaderParts[1];
+  const token = authHeaderParts[1];
 
   try {
-    jwt.verify(jwtToken, jwtSecret);
+    jwt.verify(token, JWT_SECRET);
   } catch (e) {
-    res.status(401).send({ errorMessage: 'Invalid Auth token!' });
+    res.status(401).send({ errorMessage: 'Invalid Auth token' });
     return;
   }
 
-  const { userId, roleId } = jwt.decode(jwtToken);
+  const { userId, roleId } = jwt.decode(token);
 
   if (roleId < minRequiredRole) {
-    res.status(403).send({ errorMessage: 'Your role has not enough rights for such request' });
+    res.status(403).send({ errorMessage: 'Forbidden for your role' });
     return;
   }
 
