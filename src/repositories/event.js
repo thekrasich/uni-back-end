@@ -222,11 +222,17 @@ const findTagsByEventId = async id => {
     .select(['t.id', 't.name', 't.color']);
 }
 
+const findCreatorUserIdByEventId = id => db('events.event')
+  .select('creator_user_id as creatorUserId')
+  .where('id', '=', id)
+  .first();
+
 module.exports = {
   create,
   update,
   remove,
   findAll,
   findById,
-  findTagsByEventId
+  findTagsByEventId,
+  findCreatorUserIdByEventId
 }
