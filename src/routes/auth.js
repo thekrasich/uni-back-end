@@ -16,12 +16,12 @@ router.post('/auth/sign-up',
   email,
   password,
   validate,
-  errorHandler(authService.signIn));
+  errorHandler(authService.signUp));
 
 router.post('/auth/sign-in',
   email,
   password,
   validate,
-  errorHandler(authService.signUp));
+  errorHandler(authService.signIn));
 
 module.exports = router;
