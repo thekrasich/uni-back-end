@@ -23,7 +23,8 @@ const signUp = async (req, res) => {
   user.passwordHash = bcrypt.hashSync(user.password, salt);
 
   try {
-    const [{ id }] = await userRepo.createUser(user);
+    const [{ id }] = await userRepo.create(user);
+
     res.status(201).send({
       id,
       roleId: user.roleId,
@@ -31,7 +32,7 @@ const signUp = async (req, res) => {
       email: user.email
     });
   } catch (e) {
-    res.status(409).send({ errorMessage: `${e}` });
+    res.status(409).send({ errorMessage: "User with such email already exists" });
   }
 }
 

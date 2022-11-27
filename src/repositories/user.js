@@ -1,6 +1,6 @@
 const { db } = require("./db");
 
-const createUser = ({ roleId, fullName, email, passwordHash }) => db('users.user')
+const create = ({ roleId, fullName, email, passwordHash }) => db('users.user')
   .insert({
     role_id: roleId,
     full_name: fullName,
@@ -14,6 +14,6 @@ const findAuthDataByEmail = email => db('users.user')
     .first();
 
 module.exports = {
-  createUser,
+  create,
   findAuthDataByEmail
 }
