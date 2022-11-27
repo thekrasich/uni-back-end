@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
+const { validationResult, param } = require('express-validator');
 
 const jwtSecret = 'test';
 
@@ -55,6 +55,8 @@ const validate = (req, res, next) => {
   next();
 }
 
+const idParam = param('id').isInt({min: 1})
+
 const errorHandler = routerCallBack => {
   return async (req, res, next) => {
     try {
@@ -70,5 +72,6 @@ module.exports = {
   authRole,
   auth,
   validate,
+  idParam,
   errorHandler
 };
