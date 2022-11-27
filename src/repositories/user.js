@@ -1,27 +1,17 @@
 const { db } = require("./db");
 
-const createUser = user => {
-  return db('users.user').insert({
-    role_id: user.roleId,
-    full_name: user.fullName,
-    email: user.email,
-    password_hash: user.passwordHash
-  }).returning('id');
-}
+const createUser = ({ roleId, fullName, email, passwordHash }) => db('users.user')
+  .insert({
+    role_id: roleId,
+    full_name: fullName,
+    email,
+    password_hash: passwordHash })
+  .returning('id');
 
-const findAuthDataByEmail = email => {
-  return db('users.user')
-    .select([
-      'id',
-      'role_id as roleId',
-      'full_name as fullName',
-      'email',
-      'password_hash as passwordHash',
-      'created_at as createdAt'
-    ])
+const findAuthDataByEmail = email => db('users.user')
+    .select(['id', 'password_hash as passwordHash'])
     .where({ email })
     .first();
-}
 
 module.exports = {
   createUser,
