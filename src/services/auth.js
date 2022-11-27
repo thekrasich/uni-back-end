@@ -1,6 +1,6 @@
 const userRepo = require('./../repositories/user');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { sign } = require('../middleware');
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -11,7 +11,7 @@ const signIn = async (req, res) => {
   const isMatch = bcrypt.compareSync(password, user.passwordHash);
 
   if (isMatch) {
-    res.send({ token: jwt.sign({ userId: user.id, roleId: user.roleId }, jwtSecret) });
+    res.send({ token: sign({ userId: user.id, roleId: user.roleId }) });
   } else {
     res.status(401).send({ errorMessage: 'Unauthorized' });
   }

@@ -6,6 +6,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'lnu-events';
 const AUTH_TOKEN_HEADER = "Authorization";
 const TOKEN_PREFIX = "Bearer";
 
+const sign = payload => jwt.sign(payload, JWT_SECRET);
+
 const authRole = (minRequiredRole = 1) => (req, res, next) => {
   const authHeader = req.header(AUTH_TOKEN_HEADER);
 
@@ -66,6 +68,7 @@ const errorHandler = routerCallBack => {
 };
 
 module.exports = {
+  sign,
   authRole,
   auth,
   validate,
