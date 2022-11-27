@@ -7,12 +7,6 @@
   "include_create_sql": false,
   "columns": [
     {
-      "name": "id",
-      "null_percentage": 0,
-      "type": "Row Number",
-      "formula": null
-    },
-    {
       "name": "role_id",
       "null_percentage": 0,
       "type": "Row Number",
