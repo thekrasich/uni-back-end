@@ -31,11 +31,24 @@ const onlyEventCreator = actionName => async (req, res, next) => {
   next();
 }
 
-const findById = (req, res) => {
-  const id = +req.params.id;
+const update = async (req, res) => {
+  const result = await eventRepo.update(req.params.id, req.body)
+  if (result) {
+    res.status(204).send(result);
+  } else {
+    res.status(404).send({ errorMessage: "Event not found" });
+  }
+}
 
-  return eventRepo.findById(id)
-    .then(event => {
+const remove = async (req, res) => {
+
+  const result = await eventRepo.remove(req.params.id);
+  if (result) {
+    res.status(204).send(result);
+  } else {
+    res.status(404).send({ errorMessage: "Event not found" });
+  }
+}
 
 const findAll = async (req, res) => res.send({
   items: (await eventRepo.findAll(req.query))
@@ -63,6 +76,9 @@ const findTagsByEventId = async (req, res) => {
 
 module.exports = {
   create,
+  onlyEventCreator,
+  update,
+  remove,
   findAll,
   findById,
   findTagsByEventId
