@@ -1,18 +1,12 @@
-const { validationResult } = require('express-validator');
-
 const eventRepo = require('../repositories/event');
 
 const create = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const event = req.body;
-  // temporarily, for testing
-  // event.creatorUserId = req.user.id;
-  event.creatorUserId = 11;
-  event.id = await eventRepo.create(event);
+
+  event.creatorUserId = req.user.id;
+  const {id, createdAt} = await eventRepo.create(event);
+  event.id = id;
+  event.createdAt = createdAt;
 
   res.status(201).send(event);
 }
