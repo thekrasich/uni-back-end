@@ -7,7 +7,7 @@ const { authRole, idParam, validate, errorHandler } = require("./../middleware")
 const departmentService = require('../services/department');
 
 // POST
-router.post('/department',
+router.post('/departments',
   authRole(2),
   body('facultyId').isInt({ min: 1 }).toInt(),
   body('name').isLength({ min: 2, max: 256 }),
