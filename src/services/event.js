@@ -37,18 +37,28 @@ const findById = (req, res) => {
   return eventRepo.findById(id)
     .then(event => {
 
-      if (event) {
-        res.send(event);
-      } else {
-        res.status(404).send({ errorMessage: 'Event not found!' });
-      }
-    })
+const findAll = async (req, res) => res.send({
+  items: (await eventRepo.findAll(req.query))
+});
+
+const findById = async (req, res) => {
+  const event = await eventRepo.findById(req.params.id);
+  if(event) {
+    res.send(event);
+  }
+  else {
+    res.status(404).send({ errorMessage: "Event not found" });
+  }
 }
 
-const findTagsByEventId = (req, res) => {
-  return eventRepo.findTagsByEventId(+req.params.id)
-    .then(tags => res.send({ items: tags }))
-    .catch(_ => res.status(404).send({ errorMessage: 'Event not found' }))
+const findTagsByEventId = async (req, res) => {
+  const tags = await eventRepo.findTagsByEventId(req.params.id);
+  if(tags) {
+    res.send({ items: tags });
+  }
+  else {
+    res.status(404).send({ errorMessage: "Event not found" });
+  }
 }
 
 module.exports = {
