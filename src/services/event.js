@@ -17,9 +17,18 @@ const create = async (req, res) => {
   res.status(201).send(event);
 }
 
-const findAll = (req, res) => {
-  return eventRepo.findAll(req.query)
-    .then(events => res.send({ items: events }))
+const onlyEventCreator = actionName => async (req, res, next) => {
+  const {creatorUserId} = await eventRepo.findCreatorUserIdByEventId(req.params.id);
+
+  if(!creatorUserId) {
+    res.status(404).send({ errorMessage: "Event not found" });
+  }
+
+  if(creatorUserId !== req.user.id) {
+    res.status(401).send({errorMessage: `Only the creator of an event can ${actionName} that event`});
+  }
+
+  next();
 }
 
 const findById = (req, res) => {
