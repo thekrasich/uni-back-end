@@ -4,8 +4,8 @@ const create = (req, res) => departmentRepo.create(req.body)
   .then(id => res.send(id));
 
 const findAll = (req, res) => departmentRepo.findAll()
-  .then(events => {
-    res.send(events);
+  .then(departments => {
+    res.send({ items: departments });
   });
 
 const findById = (req, res) => {
