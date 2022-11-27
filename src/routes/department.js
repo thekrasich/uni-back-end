@@ -3,19 +3,27 @@ const router = express.Router();
 
 const { body } = require('express-validator');
 
-const { auth, authRole, validate, errorHandler } = require("./../middleware");
+const { auth, authRole, idParam, validate, errorHandler } = require("./../middleware");
 const departmentService = require('../services/department');
 
+// POST
 router.post('/department',
   authRole(2),
   body('facultyId').isInt().toInt(),
   body('name'),
   body('url').optional().isURL(),
   validate,
-  errorHandler(departmentService.create)
-);
+  errorHandler(departmentService.create));
 
-router.get('/departments', auth, errorHandler(departmentService.findAll));
-router.get('/departments/:id([1-9][0-9]+|[1-9])', auth, errorHandler(departmentService.findById));
+// GET
+router.get('/departments',
+  auth,
+  errorHandler(departmentService.findAll));
+
+router.get('/departments/:id',
+  idParam,
+  validate,
+  auth,
+  errorHandler(departmentService.findById));
 
 module.exports = router;

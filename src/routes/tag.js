@@ -1,20 +1,39 @@
 const express = require('express');
 const router = express.Router();
-
-const { body } = require('express-validator');
+const { body, oneOf } = require('express-validator');
 
 const { errorHandler } = require("./../middleware");
-
-const { auth, authRole, validate } = require("../middleware");
+const { auth, authRole, validate, idParam } = require("../middleware");
 const tagService = require('../services/tag');
 
-router.post('/tag', authRole(2),
-  body('name').isLength({ min: 3, max: 128 }),
-  body('color').isHexColor(),
+// validators & sanitizers
+const name = body('name').isLength({ min: 2, max: 64 });
+const color = body('color').isHexColor();
+
+// POST
+router.post('/tags',
+  name,
+  color,
   validate,
+  authRole(2),
   errorHandler(tagService.create));
 
-router.get('/tags/:id([1-9][0-9]+|[1-9])', auth, errorHandler(tagService.findById));
-router.get('/tags', auth, errorHandler(tagService.findAll))
+// PUT
+router.put('/tags/:id',
+  idParam,
+  validate,
+  authRole(2),
+  oneOf([name, color]));
+
+// GET
+router.get('/tags/:id',
+  idParam,
+  validate,
+  auth,
+  errorHandler(tagService.findById));
+
+router.get('/tags',
+  auth,
+  errorHandler(tagService.findAll));
 
 module.exports = router;
