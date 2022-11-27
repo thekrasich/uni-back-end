@@ -3,46 +3,131 @@ const { db } = require("./db");
 const create = async ({ creatorUserId, title, description, departmentId, startsAt, endsAt, tags }) => {
   const trx = await db.transaction();
 
-  return trx.insert({
-    creator_user_id: creatorUserId,
-    title,
-    description,
-    department_id: departmentId,
-    starts_at: startsAt,
-    ends_at: endsAt
-  }, 'id')
-    .into('events.event')
-    .then(([{ id }]) => {
-      if (tags && tags.length > 0) {
-        console.log("tags && tags.length > 0");
-        console.log(`inserted event id: ${id}`)
-        const event_tags = tags.map(tagId => ({
-          tag_id: tagId,
-          event_id: id
-        }));
+  try {
+    const [{ id, createdAt }] = await trx.insert({
+      creator_user_id: creatorUserId,
+      title,
+      description,
+      department_id: departmentId,
+      starts_at: startsAt,
+      ends_at: endsAt
+    }, ['id', 'created_at as createdAt'])
+      .into('events.event');
 
-        return trx.insert(event_tags, '*')
-          .into('events.event_tag')
-          .then(ids => {
-            console.log("Inserted event_tag ids");
-            console.log(ids);
-            return id;
-          });
-      } else {
-        console.log(`Promise.resolve(${id})`)
-        return Promise.resolve(id);
-      }
-    })
-    .then(id => {
-      return trx.rollback().then(_ => id);
-    })
-    .catch(e => {
-      return trx.rollback().then(_ => {
-        console.log(e);
-        throw e;
-      });
-    });
+    if (tags && tags.length > 0) {
+      const event_tags = tags.map(tagId => ({
+        tag_id: tagId,
+        event_id: id
+      }));
+
+      await trx.insert(event_tags)
+        .into('events.event_tag');
+    }
+
+    await trx.commit();
+
+    return {
+      id,
+      createdAt
+    }
+
+  } catch (e) {
+    await trx.rollback();
+    console.log(e);
+  }
 };
+
+const setDiff = (a, b) => {
+  const diff = new Set(a);
+  for (const item of b) {
+    diff.delete(b);
+  }
+  return diff;
+}
+
+const update = async (id, { title, description, departmentId, startsAt, endsAt, tags }) => {
+  const trx = await db.transaction();
+
+  try {
+    const updated = await trx('events.event')
+      .where('id', '=', id)
+      .update({ title, description, departmentId, startsAt, endsAt });
+
+    if(updated < 1) {
+      return;
+    }
+
+    const newTags = new Set(tags);
+    const oldTags = new Set(await trx('events.event_tag')
+      .select(['event_id', 'tag_id'])
+      .where('event_id', '=', id));
+
+    const tagsRemoved = await trx('events.event_tag')
+      .whereIn('tag_id', Array.from(setDiff(oldTags, newTags)))
+      .andWhere('event_id', '=', id)
+      .del();
+
+    const toInsert = Array.from(setDiff(newTags, oldTags))
+      .map(tag_id => ({ event_id: id, tag_id }))
+    const tagsAdded = await trx('events.event_tag')
+      .insert(toInsert);
+
+    const { creatorUserId, createdAt } = await trx('events.event')
+      .select(['creator_user_id as creatorUserId', 'created_at as createdAt'])
+      .where('id', '=', id)
+      .first();
+
+    await trx.commit();
+
+    return {
+      event: {
+        id,
+        creatorUserId,
+        title,
+        description,
+        departmentId,
+        startsAt,
+        endsAt,
+        tags,
+        createdAt
+      },
+      tagsAdded,
+      tagsRemoved
+    }
+  } catch (e) {
+    await trx.rollback();
+    console.log(e);
+    throw e;
+  }
+}
+
+const remove = async id => {
+  const trx = await db.transaction();
+
+  try {
+    const eventTagsDeleted = await trx('events.event_tag')
+      .where('event_id', '=', id)
+      .del();
+
+    const eventsDeleted = await trx('event.event')
+      .where('id', '=', id)
+      .del();
+
+    if(eventsDeleted < 1) {
+      return;
+    }
+
+    await trx.commit();
+
+    return {
+      eventTagsDeleted
+    }
+  } catch (e) {
+    await trx.rollback();
+    console.log(e);
+    throw e;
+  }
+}
 
 const reduceTags = events => {
   return Array.from(events.reduce((result, row) => {
@@ -123,19 +208,24 @@ const findById = id => {
 }
 
 const findTagsByEventId = async id => {
-  const event = await db('events.event').select('id').where('id', '=', id);
-  if(!event) {
-    throw new Error(`Event with id ${id} doesn't exist`);
+  const event = await db('events.event')
+    .select('id')
+    .where('id', '=', id);
+
+  if (!event) {
+    return;
   }
 
-  return db({et: 'events.event_tag'})
+  return db({ et: 'events.event_tag' })
     .innerJoin('events.tag as t', 't.id', '=', 'et.tag_id')
     .where('et.event_id', '=', id)
-    .select(['t.id', 't.name', 't.color'])
+    .select(['t.id', 't.name', 't.color']);
 }
 
 module.exports = {
   create,
+  update,
+  remove,
   findAll,
   findById,
   findTagsByEventId
