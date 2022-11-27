@@ -6,17 +6,21 @@ const { validate, errorHandler } = require("./../middleware");
 const authService = require('../services/auth');
 const { body } = require("express-validator");
 
+const email = body('email').isEmail().isLength({ max: 378 });
+const password = body('password').isLength({min: 8, max: 128});
+
+// POST
 router.post('/auth/sign-up',
   body('roleId').isInt().toInt(),
-  body('fullName'),
-  body('email').isEmail(),
-  body('password'),
+  body('fullName').isLength({ min: 2, max: 128 }),
+  email,
+  password,
   validate,
   errorHandler(authService.signIn));
 
 router.post('/auth/sign-in',
-  body('email').isEmail(),
-  body('password'),
+  email,
+  password,
   validate,
   errorHandler(authService.signUp));
 

@@ -9,7 +9,7 @@ const facultyService = require('../services/faculty');
 
 // POST
 router.post('/faculties',
-  body('name'),
+  body('name').isLength({ min: 2, max: 256 }),
   body('url').optional().isURL(),
   validate,
   authRole(2),

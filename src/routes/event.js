@@ -3,16 +3,17 @@ const router = express.Router();
 
 const { body, query, oneOf } = require('express-validator');
 
-const { auth, authRole, validate, idParam, errorHandler } = require("./../middleware");
+const { auth, validate, idParam, errorHandler } = require("./../middleware");
 const eventService = require('../services/event');
 
 // validators & sanitizers
-const title = body('title')
-const description = body('description')
+const title = body('title').isLength({min: 2, max: 128});
+const description = body('description').isLength({min: 0, max: 999});
 const departmentId = body('departmentId').isInt({ min: 1 }).toInt();
 const startsAt = body(['startsAt']).isISO8601().toDate();
 const endsAt = body(['endsAt']).isISO8601().toDate();
-const tags = body('tags.*').isInt({min: 1}).toInt();
+const tags = body('tags').isArray()
+const tag = body('tags.*').isInt({min: 1}).toInt();
 
 // POST
 router.post('/events',
@@ -22,6 +23,7 @@ router.post('/events',
   startsAt,
   endsAt,
   tags,
+  tag,
   validate,
   auth,
   errorHandler(eventService.create));
@@ -35,7 +37,8 @@ router.put('/events/:id',
     departmentId,
     startsAt,
     endsAt,
-    tags
+    tags,
+    tag
   ]),
   validate,
   auth,
