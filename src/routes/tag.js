@@ -29,11 +29,9 @@ router.put('/tags/:id',
 router.get('/tags/:id',
   idParam,
   validate,
-  auth,
   errorHandler(tagService.findById));
 
 router.get('/tags',
-  auth,
   errorHandler(tagService.findAll));
 
 module.exports = router;

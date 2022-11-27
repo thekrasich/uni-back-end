@@ -17,13 +17,11 @@ router.post('/faculties',
 
 // GET
 router.get('/faculties',
-  auth,
   errorHandler(facultyService.findAll));
 
 router.get('/faculties/:id',
   idParam,
   validate,
-  auth,
   errorHandler(facultyService.findById));
 
 module.exports = router;

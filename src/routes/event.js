@@ -23,7 +23,7 @@ router.post('/events',
   endsAt,
   tags,
   validate,
-  authRole(2),
+  auth,
   errorHandler(eventService.create));
 
 // PUT
@@ -38,7 +38,7 @@ router.put('/events/:id',
     tags
   ]),
   validate,
-  authRole(2),
+  auth,
   eventService.onlyEventCreator('edit'),
   errorHandler(eventService.update));
 
@@ -46,7 +46,7 @@ router.put('/events/:id',
 router.delete('/events/:id',
   idParam,
   validate,
-  authRole(2),
+  auth,
   eventService.onlyEventCreator('delete'),
   errorHandler(eventService.remove));
 
@@ -55,19 +55,16 @@ router.get('/events',
   query(['from', 'to']).optional().isISO8601(),
   query(['departments', 'faculties', 'tags']).optional().customSanitizer((value, _) => value.split(',')),
   validate,
-  auth,
   errorHandler(eventService.findAll));
 
 router.get('/events/:id',
   idParam,
   validate,
-  auth,
   errorHandler(eventService.findById));
 
 router.get('/events/:id/tags',
   idParam,
   validate,
-  auth,
   errorHandler(eventService.findTagsByEventId));
 
 module.exports = router;
