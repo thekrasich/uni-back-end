@@ -28,7 +28,7 @@ const remove = async (req, res) => {
 
 const findAll = (req, res) => {
   return tagRepo.findAll(req.body)
-    .then(events => res.send(events));
+    .then(tags => res.send({ items: tags }));
 }
 
 
