@@ -32,6 +32,17 @@
       "formula": null
     },
     {
+      "name": "image_url",
+      "null_percentage": 0,
+      "type": "Dummy Image URL",
+      "minHeight": 100,
+      "maxHeight": 250,
+      "minWidth": 100,
+      "maxWidth": 250,
+      "format": "png",
+      "formula": null
+    },
+    {
       "name": "department_id",
       "null_percentage": 0,
       "type": "Number",

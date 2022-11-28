@@ -1,6 +1,6 @@
 const { db } = require("./db");
 
-const create = async ({ creatorUserId, title, description, departmentId, startsAt, endsAt, tags }) => {
+const create = async ({ creatorUserId, title, description, imageUrl, departmentId, startsAt, endsAt, tags }) => {
   const trx = await db.transaction();
 
   try {
@@ -8,6 +8,7 @@ const create = async ({ creatorUserId, title, description, departmentId, startsA
       creator_user_id: creatorUserId,
       title,
       description,
+      imageUrl,
       department_id: departmentId,
       starts_at: startsAt,
       ends_at: endsAt
@@ -31,6 +32,7 @@ const create = async ({ creatorUserId, title, description, departmentId, startsA
       creatorUserId,
       title,
       description,
+      imageUrl,
       departmentId,
       startsAt,
       endsAt,
@@ -52,13 +54,13 @@ const setDiff = (a, b) => {
   return diff;
 }
 
-const update = async (id, { title, description, departmentId, startsAt, endsAt, tags }) => {
+const update = async (id, { title, description, imageUrl, departmentId, startsAt, endsAt, tags }) => {
   const trx = await db.transaction();
 
   try {
     const updated = await trx('events.event')
       .where('id', '=', id)
-      .update({ title, description, departmentId, startsAt, endsAt });
+      .update({ title, description, imageUrl, departmentId, startsAt, endsAt });
 
     if (updated < 1) {
       return;
@@ -92,6 +94,7 @@ const update = async (id, { title, description, departmentId, startsAt, endsAt, 
         creatorUserId,
         title,
         description,
+        imageUrl,
         departmentId,
         startsAt,
         endsAt,
@@ -142,13 +145,20 @@ const reduceTags = events => {
         creatorUserId: row.creatorUserId,
         title: row.title,
         description: row.description,
+        imageUrl: row.imageUrl,
         department: {
           id: row.departmentId,
           name: row.departmentName,
+          phone: row.departmentPhone,
+          email: row.departmentEmail,
+          imageUrl: row.departmentImageUrl,
           url: row.departmentUrl,
           faculty: {
             id: row.facultyId,
             name: row.facultyName,
+            address: row.facultyAddress,
+            phone: row.facultyPhone,
+            email: row.facultyEmail,
             url: row.facultyUrl
           }
         },
@@ -174,11 +184,19 @@ const fetchAll = () =>
       'e.creator_user_id as creatorUserId',
       'e.title',
       'e.description',
+      'e.image_url as imageUrl',
       'e.department_id as departmentId',
       'd.name as departmentName',
+      'd.phone as departmentImageUrlPhone',
+      'd.email as departmentImageUrlEmail',
+      'd.image_url as departmentImageUrl',
       'd.url as departmentUrl',
       'f.id as facultyId',
       'f.name as facultyName',
+      'f.address as facultyAddress',
+      'f.phone as facultyPhone',
+      'f.email as facultyEmail',
+      'f.image_url as facultyImageUrl',
       'f.url as facultyUrl',
       't.id as tagId',
       't.name as tagName',

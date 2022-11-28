@@ -1,5 +1,5 @@
-insert into departments.faculty (name, url) values ('sollicitudin vitae consectetuer', 'https://freewebs.com/quis/orci/nullam/molestie/nibh.xml');
-insert into departments.faculty (name, url) values ('nec dui luctus rutrum nulla tellus in', null);
-insert into departments.faculty (name, url) values ('at nunc commodo placerat', 'https://google.nl/ut/dolor/morbi/vel.xml');
-insert into departments.faculty (name, url) values ('morbi vel lectus in quam', null);
-insert into departments.faculty (name, url) values ('sagittis dui vel nisl duis ac nibh', 'http://whitehouse.gov/in/eleifend/quam/a/odio/in/hac.json');
+insert into departments.faculty (name, address, phone, email, image_url, url) values ('vivamus in felis eu', '24271 Goodland Drive', '739-785-2288', 'epeggs0@ed.gov', 'http://dummyimage.com/246x121.png/dddddd/000000', 'http://imdb.com/cubilia/curae/duis/faucibus/accumsan.json');
+insert into departments.faculty (name, address, phone, email, image_url, url) values ('curabitur convallis duis', '969 Prentice Pass', '671-452-2713', 'apulster1@soundcloud.com', 'http://dummyimage.com/111x190.png/5fa2dd/ffffff', 'http://amazon.co.uk/felis/ut/at/dolor/quis/odio/consequat.js');
+insert into departments.faculty (name, address, phone, email, image_url, url) values ('sapien non mi integer ac neque duis', '960 Schurz Pass', '739-144-7427', 'fsparkwell2@bizjournals.com', 'http://dummyimage.com/235x226.png/cc0000/ffffff', null);
+insert into departments.faculty (name, address, phone, email, image_url, url) values ('sed interdum venenatis', '40463 Ridgeway Center', '967-306-8764', 'tbertwistle3@eventbrite.com', 'http://dummyimage.com/234x229.png/5fa2dd/ffffff', 'http://weather.com/rutrum/nulla/tellus.png');
+insert into departments.faculty (name, address, phone, email, image_url, url) values ('morbi odio odio elementum', '23762 Miller Terrace', '278-348-6445', 'dwomack4@foxnews.com', 'http://dummyimage.com/248x143.png/ff4444/ffffff', null);

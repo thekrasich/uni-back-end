@@ -1,9 +1,9 @@
 const { db } = require("./db");
 
-const create = ({ name, url }) => {
+const create = ({ name, address, phone, email, imageUrl, url }) => {
   try {
     return db('departments.faculty')
-      .insert({ name, url }, 'id');
+      .insert({ name, address, phone, email, imageUrl, url }, 'id');
   } catch (e) {
     console.log(e);
   }
@@ -15,6 +15,10 @@ const reduceDepartments = faculties =>
       result.set(row.id, {
         id: row.id,
         name: row.name,
+        address: row.address,
+        phone: row.phone,
+        email: row.email,
+        imageUrl: row.imageUrl,
         url: row.url,
         departments: []
       });
@@ -22,6 +26,9 @@ const reduceDepartments = faculties =>
     row.departmentId && result.get(row.id).departments.push({
       id: row.departmentId,
       name: row.departmentName,
+      phone: row.departmentPhone,
+      email: row.departmentEmail,
+      imageUrl: row.departmentImageUrl,
       url: row.departmentUrl
     });
     return result;
@@ -33,9 +40,16 @@ const fetchAll = () =>
     .select([
       'f.id',
       'f.name',
+      'f.address',
+      'f.phone',
+      'f.email',
+      'f.image_url as imageUrl',
       'f.url',
       'd.id as departmentId',
       'd.name as departmentName',
+      'd.phone as departmentPhone',
+      'd.email as departmentEmail',
+      'd.imageUrl as departmentImageUrl',
       'd.url as departmentUrl'
     ]);
 

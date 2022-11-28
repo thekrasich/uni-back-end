@@ -11,6 +11,10 @@ const facultyService = require('../services/faculty');
 router.post('/faculties',
   authRole(2),
   body('name').isLength({ min: 2, max: 256 }),
+  body('address'),
+  body('phone'),
+  body('email').isEmail(),
+  body('imageUrl').isURL().optional(),
   body('url').optional().isURL(),
   validate,
   errorHandler(facultyService.create));

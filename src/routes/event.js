@@ -9,6 +9,7 @@ const eventService = require('../services/event');
 // validators & sanitizers
 const title = body('title').isLength({ min: 2, max: 128 });
 const description = body('description').isLength({ min: 0, max: 999 });
+const imageUrl = body('imageUrl').isURL();
 const departmentId = body('departmentId').isInt({ min: 1 }).toInt();
 const startsAt = body(['startsAt']).isISO8601().toDate();
 const endsAt = body(['endsAt']).isISO8601().toDate();
@@ -20,6 +21,7 @@ router.post('/events',
   auth,
   title,
   description,
+  imageUrl.optional(),
   departmentId,
   startsAt,
   endsAt,
@@ -37,6 +39,7 @@ router.put('/events/:id',
   oneOf([
     title,
     description,
+    imageUrl,
     departmentId,
     startsAt,
     endsAt,
