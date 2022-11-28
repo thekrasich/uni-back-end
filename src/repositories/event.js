@@ -8,7 +8,7 @@ const create = async ({ creatorUserId, title, description, imageUrl, departmentI
       creator_user_id: creatorUserId,
       title,
       description,
-      imageUrl,
+      image_url: imageUrl,
       department_id: departmentId,
       starts_at: startsAt,
       ends_at: endsAt

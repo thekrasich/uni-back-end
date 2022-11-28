@@ -19,7 +19,7 @@ const onlyEventCreator = actionName => async (req, res, next) => {
 }
 
 const create = async (req, res) => {
-  const creatorUserId = req.body.id;
+  const creatorUserId = req.user.id;
   const event = await eventRepo.create({ creatorUserId, ...req.body });
   if (event) {
     res.status(201).send(event);
