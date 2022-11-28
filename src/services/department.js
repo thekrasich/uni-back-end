@@ -1,7 +1,14 @@
 const departmentRepo = require('../repositories/department');
 
-const create = async (req, res) =>
-  res.send(await departmentRepo.create(req.body));
+const create = async (req, res) => {
+  const department = await departmentRepo.create(req.body);
+  if (department) {
+    res.send(department);
+  } else {
+    res.status(409).send({ errorMessage: "Department already exists" });
+  }
+
+}
 
 const findAll = async (req, res) =>
   res.send({ items: await departmentRepo.findAll() });

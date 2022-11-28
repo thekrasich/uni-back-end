@@ -7,7 +7,7 @@ const create = async ({ name, color }) => {
     const [tag] = await db(TABLE).insert({ name, color, }, '*');
     return tag;
   } catch (e) {
-    return null;
+    console.log(e);
   }
 }
 
@@ -36,7 +36,6 @@ const remove = async id => {
   } catch (e) {
     await trx.rollback();
     console.log(e);
-    throw e;
   }
 }
 

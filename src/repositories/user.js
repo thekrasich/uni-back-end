@@ -1,14 +1,21 @@
 const { db } = require("./db");
 
-const create = ({ roleId, fullName, email, passwordHash }) =>
-  db('users.user')
-    .insert({
-        role_id: roleId,
-        full_name: fullName,
-        email,
-        password_hash: passwordHash
-      },
-      ['id', 'created_at as createdAt']);
+const create = async ({ roleId, fullName, email, passwordHash }) => {
+  try {
+    const [{ id, createdAt }] = await db('users.user')
+      .insert({ role_id: roleId, full_name: fullName, email, password_hash: passwordHash },
+        ['id', 'created_at as createdAt']);
+    return {
+      id,
+      roleId,
+      fullName,
+      email,
+      createdAt
+    };
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 const findAuthDataByEmail = email =>
   db('users.user')
@@ -17,6 +24,5 @@ const findAuthDataByEmail = email =>
     .first();
 
 module.exports = {
-  create,
-  findAuthDataByEmail
+  create, findAuthDataByEmail
 }

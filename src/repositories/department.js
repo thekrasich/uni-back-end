@@ -1,8 +1,13 @@
 const { db } = require("./db");
 
-const create = ({ facultyId, name, url }) =>
-  db('departments.department')
-    .insert({ faculty_id: facultyId, name, url }, 'id');
+const create = ({ facultyId, name, url }) => {
+  try {
+    return db('departments.department')
+      .insert({ faculty_id: facultyId, name, url }, 'id');
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 const fetchAll = () =>
   db({ d: 'departments.department' })
@@ -35,7 +40,7 @@ const findById = async id => {
   const department = await fetchAll()
     .where('d.id', id)
     .first();
-  return nestFaculty(department);
+  return department && nestFaculty(department);
 }
 
 module.exports = {

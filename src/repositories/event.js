@@ -28,6 +28,13 @@ const create = async ({ creatorUserId, title, description, departmentId, startsA
 
     return {
       id,
+      creatorUserId,
+      title,
+      description,
+      departmentId,
+      startsAt,
+      endsAt,
+      tags,
       createdAt
     }
 
@@ -97,7 +104,6 @@ const update = async (id, { title, description, departmentId, startsAt, endsAt, 
   } catch (e) {
     await trx.rollback();
     console.log(e);
-    throw e;
   }
 }
 
@@ -125,7 +131,6 @@ const remove = async id => {
   } catch (e) {
     await trx.rollback();
     console.log(e);
-    throw e;
   }
 }
 
@@ -201,9 +206,9 @@ const findAll = async ({ from, to, departments, faculties, tags }) => {
 }
 
 const findById = async id => {
-  const events = await fetchAll()
+  const flatEvent = await fetchAll()
     .where('e.id', id);
-  return reduceTags(events[0]);
+  return flatEvent && flatEvent.length && reduceTags(flatEvent)[0];
 }
 
 const findTagsByEventId = async id => {

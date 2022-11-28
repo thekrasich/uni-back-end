@@ -8,6 +8,10 @@ const signIn = async (req, res) => {
   const { email, password } = req.body;
   const user = await userRepo.findAuthDataByEmail(email);
 
+  if (!user) {
+    res.status(401).send({ errorMessage: 'Unauthorized' });
+  }
+
   const isMatch = bcrypt.compareSync(password, user.passwordHash);
 
   if (isMatch) {
@@ -18,22 +22,13 @@ const signIn = async (req, res) => {
 }
 
 const signUp = async (req, res) => {
-  const user = req.body;
+  const passwordHash = bcrypt.hashSync(req.body.password, salt);
 
-  user.passwordHash = bcrypt.hashSync(user.password, salt);
-
-  try {
-    const [{ id, createdAt }] = await userRepo.create(user);
-
-    res.status(201).send({
-      id,
-      roleId: user.roleId,
-      fullName: user.fullName,
-      email: user.email,
-      createdAt
-    });
-  } catch (e) {
+  const user = await userRepo.create({ ...req.body, passwordHash });
+  if (!user) {
     res.status(409).send({ errorMessage: "User with such email already exists" });
+  } else {
+    res.status(201).send(user);
   }
 }
 

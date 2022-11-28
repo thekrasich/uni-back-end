@@ -1,8 +1,13 @@
 const { db } = require("./db");
 
-const create = ({ name, url }) =>
-  db('departments.faculty')
-    .insert({ name, url }, 'id');
+const create = ({ name, url }) => {
+  try {
+    return db('departments.faculty')
+      .insert({ name, url }, 'id');
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 const reduceDepartments = faculties =>
   Array.from(faculties.reduce((result, row) => {
@@ -42,7 +47,7 @@ const findAll = async () => {
 const findById = async id => {
   const faculties = await fetchAll()
     .where('f.id', '=', id);
-  return reduceDepartments(faculties)[0];
+  return faculties && faculties.length && reduceDepartments(faculties)[0];
 }
 
 module.exports = {

@@ -19,14 +19,14 @@ const onlyEventCreator = actionName => async (req, res, next) => {
 }
 
 const create = async (req, res) => {
-  const event = req.body;
+  const creatorUserId = req.body.id;
+  const event = await eventRepo.create({ creatorUserId, ...req.body });
+  if (event) {
+    res.status(201).send(event);
+  } else {
+    res.status(409).send({ errorMessage: "Failed to create such event" });
+  }
 
-  event.creatorUserId = req.user.id;
-  const { id, createdAt } = await eventRepo.create(event);
-  event.id = id;
-  event.createdAt = createdAt;
-
-  res.status(201).send(event);
 }
 
 const update = async (req, res) => {
