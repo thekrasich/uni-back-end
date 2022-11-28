@@ -36,7 +36,7 @@ const reduceDepartments = faculties =>
 
 const fetchAll = () =>
   db({ f: 'departments.faculty' })
-    .innerJoin('departments.department as d', 'd.faculty_id', '=', 'f.id')
+    .leftJoin('departments.department as d', 'd.faculty_id', '=', 'f.id')
     .select([
       'f.id',
       'f.name',
