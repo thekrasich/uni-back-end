@@ -49,7 +49,7 @@ const fetchAll = () =>
       'd.name as departmentName',
       'd.phone as departmentPhone',
       'd.email as departmentEmail',
-      'd.imageUrl as departmentImageUrl',
+      'd.image_url as departmentImageUrl',
       'd.url as departmentUrl'
     ]);
 
