@@ -53,7 +53,7 @@ const update = async (id, { title, description, departmentId, startsAt, endsAt, 
       .where('id', '=', id)
       .update({ title, description, departmentId, startsAt, endsAt });
 
-    if(updated < 1) {
+    if (updated < 1) {
       return;
     }
 
@@ -113,7 +113,7 @@ const remove = async id => {
       .where('id', '=', id)
       .del();
 
-    if(eventsDeleted < 1) {
+    if (eventsDeleted < 1) {
       return;
     }
 
@@ -158,8 +158,8 @@ const reduceTags = events => {
   }, new Map()).values());
 }
 
-const fetchAll = () => {
-  return db({ e: 'events.event' })
+const fetchAll = () =>
+  db({ e: 'events.event' })
     .leftJoin('departments.department as d', 'e.department_id', '=', 'd.id')
     .leftJoin('departments.faculty as f', 'd.faculty_id', '=', 'f.id')
     .leftJoin('events.event_tag as et', 'e.id', '=', 'et.event_id')
@@ -182,10 +182,9 @@ const fetchAll = () => {
       'e.ends_at as endsAt',
       'e.created_at as createdAt'
     ]);
-}
 
-const findAll = ({ from, to, departments, faculties, tags }) => {
-  return fetchAll()
+const findAll = async ({ from, to, departments, faculties, tags }) => {
+  const flat = await fetchAll()
     .modify(b => {
       from && b.where('ends_at', '>=', from);
       to && b.where('starts_at', '<=', to);
@@ -197,14 +196,14 @@ const findAll = ({ from, to, departments, faculties, tags }) => {
           .innerJoin('events.tag as t', 't.id', '=', 'et.tag_id')
           .whereIn('t.name', tags)
       });
-    })
-    .then(reduceTags);
+    });
+  return reduceTags(flat);
 }
 
-const findById = id => {
-  return fetchAll()
-    .where('e.id', id)
-    .then(events => reduceTags(events)[0]);
+const findById = async id => {
+  const events = await fetchAll()
+    .where('e.id', id);
+  return reduceTags(events[0]);
 }
 
 const findTagsByEventId = async id => {
@@ -222,10 +221,11 @@ const findTagsByEventId = async id => {
     .select(['t.id', 't.name', 't.color']);
 }
 
-const findCreatorUserIdByEventId = id => db('events.event')
-  .select('creator_user_id as creatorUserId')
-  .where('id', '=', id)
-  .first();
+const findCreatorUserIdByEventId = id =>
+  db('events.event')
+    .select('creator_user_id as creatorUserId')
+    .where('id', '=', id)
+    .first();
 
 module.exports = {
   create,

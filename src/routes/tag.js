@@ -12,18 +12,19 @@ const color = body('color').isHexColor();
 
 // POST
 router.post('/tags',
+  authRole(2),
   name,
   color,
   validate,
-  authRole(2),
   errorHandler(tagService.create));
 
 // PUT
 router.put('/tags/:id',
-  idParam,
-  validate,
   authRole(2),
-  oneOf([name, color]));
+  idParam,
+  oneOf([name, color]),
+  validate,
+  errorHandler(tagService.update));
 
 // GET
 router.get('/tags/:id',

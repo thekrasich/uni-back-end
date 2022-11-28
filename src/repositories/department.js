@@ -1,36 +1,41 @@
 const { db } = require("./db");
 
-const create = ({ facultyId, name, url }) => {
-  return db('departments.department')
+const create = ({ facultyId, name, url }) =>
+  db('departments.department')
     .insert({ faculty_id: facultyId, name, url }, 'id');
-}
 
-const fetchAll = () => db({ d: 'departments.department' })
-  .innerJoin('departments.faculty as f', 'f.id', '=', 'd.faculty_id')
-  .select([
-    'd.id',
-    'd.name',
-    'd.url',
-    'f.id as facultyId',
-    'f.name as facultyName',
-    'f.url as facultyUrl'
-  ]);
+const fetchAll = () =>
+  db({ d: 'departments.department' })
+    .innerJoin('departments.faculty as f', 'f.id', '=', 'd.faculty_id')
+    .select([
+      'd.id',
+      'd.name',
+      'd.url',
+      'f.id as facultyId',
+      'f.name as facultyName',
+      'f.url as facultyUrl'
+    ]);
 
-const nestFaculty = ({id, name, url, ...faculty}) => ({
-  id,
-  name,
-  url,
-  faculty: {
-    id: faculty.facultyId,
-    name: faculty.facultyName,
-    url: faculty.facultyUrl
-  }
-})
+const nestFaculty = ({ id, name, url, ...faculty }) =>
+  ({
+    id,
+    name,
+    url,
+    faculty: {
+      id: faculty.facultyId,
+      name: faculty.facultyName,
+      url: faculty.facultyUrl
+    }
+  });
 
-const findAll = () => fetchAll().then(rows => rows.map(nestFaculty));
+const findAll = async () =>
+  (await fetchAll()).map(nestFaculty)
 
-const findById = id => {
-  return fetchAll().where('d.id', id).first().then(nestFaculty);
+const findById = async id => {
+  const department = await fetchAll()
+    .where('d.id', id)
+    .first();
+  return nestFaculty(department);
 }
 
 module.exports = {

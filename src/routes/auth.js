@@ -7,11 +7,11 @@ const authService = require('../services/auth');
 const { body } = require("express-validator");
 
 const email = body('email').isEmail().isLength({ max: 378 });
-const password = body('password').isLength({min: 8, max: 128});
+const password = body('password').isLength({ min: 8, max: 128 });
 
 // POST
 router.post('/auth/sign-up',
-  body('roleId').isInt().toInt(),
+  body('roleId').isInt({ min: 1 }).toInt(),
   body('fullName').isLength({ min: 2, max: 128 }),
   email,
   password,

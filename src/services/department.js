@@ -1,24 +1,18 @@
 const departmentRepo = require('../repositories/department');
 
-const create = (req, res) => departmentRepo.create(req.body)
-  .then(id => res.send(id));
+const create = async (req, res) =>
+  res.send(await departmentRepo.create(req.body));
 
-const findAll = (req, res) => departmentRepo.findAll()
-  .then(departments => {
-    res.send({ items: departments });
-  });
+const findAll = async (req, res) =>
+  res.send({ items: await departmentRepo.findAll() });
 
-const findById = (req, res) => {
-  const id = +req.params.id;
-
-  return departmentRepo.findById(id)
-    .then(event => {
-      if (event) {
-        res.send(event);
-      } else {
-        res.status(404).send({ errorMessage: 'Department not found!' });
-      }
-    })
+const findById = async (req, res) => {
+  const event = departmentRepo.findById(req.params.id);
+  if (event) {
+    res.send(event);
+  } else {
+    res.status(404).send({ errorMessage: 'Department not found' });
+  }
 };
 
 module.exports = {

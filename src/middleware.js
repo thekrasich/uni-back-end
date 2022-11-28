@@ -54,7 +54,7 @@ const validate = (req, res, next) => {
   next();
 }
 
-const idParam = param('id').isInt({min: 1})
+const idParam = param('id').isInt({ min: 1 }).toInt();
 
 const errorHandler = routerCallBack => {
   return async (req, res, next) => {

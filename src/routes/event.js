@@ -7,16 +7,17 @@ const { auth, validate, idParam, errorHandler } = require("./../middleware");
 const eventService = require('../services/event');
 
 // validators & sanitizers
-const title = body('title').isLength({min: 2, max: 128});
-const description = body('description').isLength({min: 0, max: 999});
+const title = body('title').isLength({ min: 2, max: 128 });
+const description = body('description').isLength({ min: 0, max: 999 });
 const departmentId = body('departmentId').isInt({ min: 1 }).toInt();
 const startsAt = body(['startsAt']).isISO8601().toDate();
 const endsAt = body(['endsAt']).isISO8601().toDate();
 const tags = body('tags').isArray()
-const tag = body('tags.*').isInt({min: 1}).toInt();
+const tag = body('tags.*').isInt({ min: 1 }).toInt();
 
 // POST
 router.post('/events',
+  auth,
   title,
   description,
   departmentId,
@@ -25,12 +26,14 @@ router.post('/events',
   tags,
   tag,
   validate,
-  auth,
   errorHandler(eventService.create));
 
 // PUT
 router.put('/events/:id',
+  auth,
   idParam,
+  validate,
+  eventService.onlyEventCreator('edit'),
   oneOf([
     title,
     description,
@@ -41,15 +44,13 @@ router.put('/events/:id',
     tag
   ]),
   validate,
-  auth,
-  eventService.onlyEventCreator('edit'),
   errorHandler(eventService.update));
 
 // DELETE
 router.delete('/events/:id',
+  auth,
   idParam,
   validate,
-  auth,
   eventService.onlyEventCreator('delete'),
   errorHandler(eventService.remove));
 

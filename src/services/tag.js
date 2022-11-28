@@ -1,49 +1,46 @@
 const tagRepo = require('../repositories/tag');
 
+const tagNotFound = res =>
+  res.status(404).send({ errorMessage: 'Tag not found' });
+
 const create = async (req, res) => {
   const tag = await tagRepo.create(req.body);
-  res.status(201).send(tag);
+  if (tag) {
+    res.status(201).send(tag);
+  } else {
+    res.status(409).send({ errorMessage: 'Tag already exists' })
+  }
+
 }
 
-const update = (req, res) => {
-  tagRepo.update(req.params.id, req.body).then(tag => {
-    if (tag) {
-      res.status(204).send(tag)
-    } else {
-      res.status(404).send({ errorMessage: 'Tag not found' })
-    }
-  });
+const update = async (req, res) => {
+  const tag = await tagRepo.update(req.params.id, req.body);
+  if (tag) {
+    res.status(204).send(tag);
+  } else {
+    tagNotFound(res);
+  }
 }
 
 const remove = async (req, res) => {
-  tagRepo.remove(req.params.id)
-    .then(({ found, affectedEventsNumber }) => {
-      if (found) {
-        res.status(200).send({ affectedEventsNumber })
-      } else {
-        res.status(404).send({ errorMessage: 'Tag not found' });
-      }
-    })
+  const { found, affectedEventsNumber } = await tagRepo.remove(req.params.id);
+  if (found) {
+    res.status(200).send({ affectedEventsNumber });
+  } else {
+    tagNotFound(res);
+  }
 }
 
-const findAll = (req, res) => {
-  return tagRepo.findAll(req.body)
-    .then(tags => res.send({ items: tags }));
-}
+const findAll = async (req, res) =>
+  res.send({ items: await tagRepo.findAll(req.body) });
 
-
-const findById = (req, res) => {
-  const id = +req.params.id;
-
-  return tagRepo.findById(id)
-    .then(event => {
-
-      if (event) {
-        res.send(event);
-      } else {
-        res.status(404).send({ errorMessage: 'Tag not found!' });
-      }
-    })
+const findById = async (req, res) => {
+  const event = await tagRepo.findById(req.params.id);
+  if (event) {
+    res.send(event);
+  } else {
+    tagNotFound(res);
+  }
 };
 
 module.exports = {

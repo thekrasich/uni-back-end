@@ -1,11 +1,11 @@
 const { db } = require("./db");
 
-const create = ({ name, url }) => {
-  return db('departments.faculty').insert({ name, url }, 'id');
-}
+const create = ({ name, url }) =>
+  db('departments.faculty')
+    .insert({ name, url }, 'id');
 
-const reduceDepartments = faculties => {
-  return Array.from(faculties.reduce((result, row) => {
+const reduceDepartments = faculties =>
+  Array.from(faculties.reduce((result, row) => {
     if (!result.has(row.id)) {
       result.set(row.id, {
         id: row.id,
@@ -21,26 +21,29 @@ const reduceDepartments = faculties => {
     });
     return result;
   }, new Map()).values());
+
+const fetchAll = () =>
+  db({ f: 'departments.faculty' })
+    .innerJoin('departments.department as d', 'd.faculty_id', '=', 'f.id')
+    .select([
+      'f.id',
+      'f.name',
+      'f.url',
+      'd.id as departmentId',
+      'd.name as departmentName',
+      'd.url as departmentUrl'
+    ]);
+
+const findAll = async () => {
+  const faculties = await fetchAll();
+  return reduceDepartments(faculties);
 }
 
-const fetchAll = () => db({ f: 'departments.faculty' })
-  .innerJoin('departments.department as d', 'd.faculty_id', '=', 'f.id')
-  .select([
-    'f.id',
-    'f.name',
-    'f.url',
-    'd.id as departmentId',
-    'd.name as departmentName',
-    'd.url as departmentUrl'
-  ]);
-
-const findAll = () => {
-  return fetchAll().then(reduceDepartments);
+const findById = async id => {
+  const faculties = await fetchAll()
+    .where('f.id', '=', id);
+  return reduceDepartments(faculties)[0];
 }
-
-const findById = id => fetchAll()
-  .where('f.id', '=', id)
-  .then(reduceDepartments)
 
 module.exports = {
   create,
